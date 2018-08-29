@@ -139,6 +139,42 @@ view: order_items {
     sql: ${total_sales_price} ;;
   }
 
+  measure: total_gross_revenue {
+    type: sum
+    value_format_name: usd_0
+    sql: case when ${returned_raw} IS NULL and ${status} <> 'Canceled' THEN ${sale_price} ELSE 0 END ;;
+  }
+
+  measure: total_gross_margin {
+    type: number
+    description: "Revenue less costs excludes cancelled and returned orders"
+    value_format_name: usd_0
+    sql: ${total_gross_revenue} - ${inventory_items.total_cost} ;;
+  }
+
+  measure: gross_margin_percentage {
+    description: "Total Gross Margin divied by Total Gross Revenue. Excludes Cancelled and Returned orders."
+    type: number
+    value_format_name: percent_2
+    sql: ${total_gross_margin} / ${total_gross_revenue} ;;
+  }
+
+  measure: average_spend_per_customer {
+    type: number
+    sql: ${total_sales_price}/${users.count};;
+    value_format_name: usd_0
+    label: "Avg Spend Per Cust"
+  }
+
+  measure: count_of_customers_having_returns {
+    type: count_distinct
+    sql: ${user_id} ;;
+    filters: {
+      field: is_returned
+      value: "Yes"
+    }
+  }
+
 
   # ----- Sets of fields for drilling ------
   set: detail {
