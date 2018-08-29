@@ -39,6 +39,7 @@ explore: inventory_items {
 }
 
 explore: order_items {
+  label: "Greg's PS Case Study OI Explore"
   join: users {
     type: left_outer
     sql_on: ${order_items.user_id} = ${users.id} ;;

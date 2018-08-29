@@ -102,11 +102,13 @@ view: order_items {
 
   measure: total_sales_price {
     type: sum
+    value_format_name: usd
     sql: ${sale_price} ;;
   }
 
   measure: average_sales_price {
     type: average
+    value_format_name: usd
     sql: ${sale_price} ;;
   }
 
@@ -136,6 +138,7 @@ view: order_items {
 
   measure: cumulative_total_sales {
     type: running_total
+    value_format_name: usd
     sql: ${total_sales_price} ;;
   }
 
@@ -150,6 +153,12 @@ view: order_items {
     description: "Revenue less costs excludes cancelled and returned orders"
     value_format_name: usd_0
     sql: ${total_gross_revenue} - ${inventory_items.total_cost} ;;
+  }
+
+  measure: average_gross_margin {
+    type: average
+    value_format_name: usd
+    sql: case when ${returned_raw} IS NULL and ${status} <> 'Canceled' THEN ${sale_price} ELSE 0 END - ${inventory_items.cost} ;;
   }
 
   measure: gross_margin_percentage {
@@ -173,6 +182,12 @@ view: order_items {
       field: is_returned
       value: "Yes"
     }
+  }
+
+  measure: percent_of_customers_with_returns{
+    type: number
+    value_format_name: percent_2
+    sql: 1.0 * ${count_of_customers_having_returns}/${users.count} ;;
   }
 
 
