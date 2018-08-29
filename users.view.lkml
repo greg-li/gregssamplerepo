@@ -34,7 +34,8 @@ view: users {
       week,
       month,
       quarter,
-      year
+      year,
+      day_of_month
     ]
     sql: ${TABLE}.created_at ;;
   }
@@ -84,6 +85,22 @@ view: users {
     sql: ${TABLE}.zip ;;
   }
 
+  dimension: days_since_signup {
+    type: number
+    sql: datediff(day,${created_date},current_date) ;;
+  }
+
+  dimension: is_new_user {
+    type: number
+    description: "90 days or less since signup"
+    sql: ${days_since_signup} <= 90   ;;
+  }
+
+  dimension_group: today {
+    type: time
+    sql: current_date ;;
+  }
+
   measure: count {
     type: count
     drill_fields: [id, first_name, last_name, events.count, order_items.count]
@@ -98,6 +115,12 @@ view: users {
 #     }
 #   }
 
+  dimension: age_tier {
+    type: tier
+    style: integer
+    tiers: [15,26,36,51,66]
+    sql: ${age} ;;
+  }
   dimension: full_name {
     type: string
     sql: ${first_name} || ' ' || ${last_name} ;;
