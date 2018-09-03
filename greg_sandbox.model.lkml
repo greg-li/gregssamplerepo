@@ -63,6 +63,12 @@ explore: order_items {
     sql_on: ${products.distribution_center_id} = ${distribution_centers.id} ;;
     relationship: many_to_one
   }
+
+  join: events {
+    type: left_outer
+    sql_on: ${users.id} = ${events.user_id} ;;
+    relationship: one_to_many
+  }
 }
 
 explore: products {

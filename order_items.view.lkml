@@ -158,6 +158,7 @@ view: order_items {
   measure: average_gross_margin {
     type: average
     value_format_name: usd
+    drill_fields: [products.category, products.brand]
     sql: case when ${returned_raw} IS NULL and ${status} <> 'Canceled' THEN ${sale_price} ELSE 0 END - ${inventory_items.cost} ;;
   }
 

@@ -73,6 +73,7 @@ view: users {
   dimension: state {
     type: string
     sql: ${TABLE}.state ;;
+    map_layer_name: us_states
   }
 
   dimension: traffic_source {
@@ -91,7 +92,7 @@ view: users {
   }
 
   dimension: is_new_user {
-    type: number
+    type: yesno
     description: "90 days or less since signup"
     sql: ${days_since_signup} <= 90   ;;
   }
@@ -124,5 +125,8 @@ view: users {
   dimension: full_name {
     type: string
     sql: ${first_name} || ' ' || ${last_name} ;;
+    drill_fields: [user_drill*]
   }
+
+  set: user_drill {fields:[is_new_user,age, age_tier,gender,days_since_signup, email, city, country]}
 }
