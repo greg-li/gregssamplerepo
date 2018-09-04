@@ -6,7 +6,8 @@ view: user_order_facts {
         count(distinct order_id) as total_lifetime_orders,
         sum(case when returned_at IS NULL and status <> 'Canceled' THEN sale_price ELSE 0 END) as total_lifetime_revenue,
         min(created_at) as first_order_date,
-        max(created_at) as latest_order_date
+        max(created_at) as latest_order_date,
+        case when count(distinct order_id) > 1 then 'Yes' else 'No' END as is_repeat
       from order_items
       group by 1
        ;;
@@ -19,6 +20,7 @@ view: user_order_facts {
 
   dimension: user_id {
     type: number
+    primary_key: yes
     sql: ${TABLE}.user_id ;;
   }
 
@@ -66,6 +68,18 @@ view: user_order_facts {
     sql: datediff(day,${latest_order_date},current_date) ;;
   }
 
+  dimension: is_active {
+    type: yesno
+    sql: ${days_since_latest_order_date} <= 90 ;;
+  }
+
+  dimension: is_repeat_customer {
+    type: string
+    sql: ${TABLE}.is_repeat;;
+    drill_fields: [detail*]
+  }
+
+
   measure: average_lifetime_orders{
     type: average
     sql: ${total_lifetime_orders} ;;
@@ -75,5 +89,11 @@ view: user_order_facts {
     type: average
     value_format_name: usd
     sql: ${total_lifetime_revenue} ;;
+  }
+
+
+  measure: average_days_since_last_order{
+    type: average
+    sql: ${days_since_latest_order_date} ;;
   }
 }

@@ -69,6 +69,19 @@ explore: order_items {
     sql_on: ${users.id} = ${events.user_id} ;;
     relationship: one_to_many
   }
+
+  join: user_order_facts {
+    type: left_outer
+    sql_on: ${users.id} = ${user_order_facts.user_id} ;;
+    relationship: one_to_one
+  }
+
+  join: sequential_order_facts {
+    type: left_outer
+    sql_on: ${order_items.order_id} = ${sequential_order_facts.order_id}
+            and ${order_items.user_id} = ${sequential_order_facts.user_id};;
+            relationship: many_to_one
+  }
 }
 
 explore: products {
