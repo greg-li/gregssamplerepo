@@ -48,6 +48,11 @@ view: products {
     sql: ${TABLE}.sku ;;
   }
 
+  set: products {
+    fields: [brand,department,retail_price,distribution_center_id,sku]
+  }
+
+
   measure: count {
     type: count
     drill_fields: [id, name, distribution_centers.id, distribution_centers.name, inventory_items.count]

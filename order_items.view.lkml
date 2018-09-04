@@ -148,6 +148,11 @@ view: order_items {
     sql: case when ${returned_raw} IS NULL and ${status} <> 'Canceled' THEN ${sale_price} ELSE 0 END ;;
   }
 
+#   measure: gross_revenue_percentage {
+#     type: percent_of_total
+#     sql: 1.0*${total_gross_revenue} ;;
+#   }
+
   measure: total_gross_margin {
     type: number
     description: "Revenue less costs excludes cancelled and returned orders"
@@ -158,7 +163,7 @@ view: order_items {
   measure: average_gross_margin {
     type: average
     value_format_name: usd
-    drill_fields: [products.category, products.brand]
+    drill_fields: [products.category, products.brand, average_gross_margin]
     sql: case when ${returned_raw} IS NULL and ${status} <> 'Canceled' THEN ${sale_price} ELSE 0 END - ${inventory_items.cost} ;;
   }
 
@@ -166,7 +171,9 @@ view: order_items {
     description: "Total Gross Margin divied by Total Gross Revenue. Excludes Cancelled and Returned orders."
     type: number
     value_format_name: percent_2
-    sql: ${total_gross_margin} / ${total_gross_revenue} ;;
+    sql: case when ${total_gross_revenue} = 0 then 0
+    else ${total_gross_margin} / ${total_gross_revenue} end ;;
+    drill_fields: [detail*, products.products*]
   }
 
   measure: average_spend_per_customer {
