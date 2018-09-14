@@ -71,7 +71,7 @@ view: order_items {
     type: tier
     style: integer
     sql: ${sale_price} ;;
-    tiers: [25,50,100,200,500,1000]
+    tiers: [75,150,300,500]
   }
 
   dimension_group: shipped {
