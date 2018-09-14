@@ -1,6 +1,16 @@
 view: products {
   sql_table_name: public.products ;;
 
+  parameter: brand_filter {
+    type: string
+    suggest_dimension: brand
+  }
+
+  parameter: category_filter {
+    type: string
+    suggest_dimension: category
+  }
+
   dimension: id {
     primary_key: yes
     type: number
@@ -9,6 +19,16 @@ view: products {
 
   dimension: brand {
     type: string
+    sql: ${TABLE}.brand ;;
+  }
+
+  dimension: brand_with_link {
+    label: "Brand"
+    type: string
+    link: {
+      label: "Brand Performance Detail"
+      url: "https://profservices.dev.looker.com/dashboards/55?category=&Brand%20Filter={{ value }}"
+    }
     sql: ${TABLE}.brand ;;
   }
 
@@ -48,8 +68,18 @@ view: products {
     sql: ${TABLE}.sku ;;
   }
 
+  dimension: brand_versus_all_other {
+    sql: case when {% parameter brand_filter %} = ${brand} then ${brand}
+    else 'Other' END;;
+  }
+
   set: products {
     fields: [brand,department,retail_price,distribution_center_id,sku]
+  }
+
+  measure: count_brands {
+    type: count_distinct
+    sql: ${brand} ;;
   }
 
 
