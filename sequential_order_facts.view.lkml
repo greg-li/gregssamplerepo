@@ -1,7 +1,8 @@
 explore: sequential_order_facts {}
 view: sequential_order_facts {
   derived_table: {
-    sql: select
+    sql: select distinct
+        row_number() over() as pk,
         user_id,
         order_id,
         created_at,
@@ -30,7 +31,7 @@ view: sequential_order_facts {
   dimension: primary_key {
     type: string
     primary_key: yes
-    sql:  ${user_id} || ${order_id} ;;
+    sql:  ${TABLE}.pk ;;
   }
 
   dimension_group: created_at {
@@ -71,7 +72,9 @@ view: sequential_order_facts {
 
   measure: average_days_between_orders{
     type: average
+    value_format_name: decimal_0
     sql: ${days_between_orders};;
+    drill_fields: [detail*]
   }
 
   measure: sixty_day_repeat_order_user_count{

@@ -91,6 +91,11 @@ view: users {
     sql: datediff(day,${created_date},current_date) ;;
   }
 
+  dimension: months_since_signup {
+    type: number
+    sql: datediff(month,${created_date},current_date) ;;
+  }
+
   dimension: is_new_user {
     type: yesno
     description: "90 days or less since signup"
@@ -115,6 +120,16 @@ view: users {
 #       value: "Yes"
 #     }
 #   }
+
+  measure: average_days_since_signup {
+    type: average
+    sql: ${days_since_signup} ;;
+  }
+
+  measure: average_months_since_signup {
+    type: average
+    sql: ${months_since_signup} ;;
+  }
 
   dimension: age_tier {
     type: tier

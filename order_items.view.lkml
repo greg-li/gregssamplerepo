@@ -1,6 +1,7 @@
 view: order_items {
   sql_table_name: public.order_items ;;
 
+# my cool name {
   dimension: id {
     primary_key: yes
     type: number
@@ -35,6 +36,7 @@ view: order_items {
     sql: ${TABLE}.delivered_at ;;
   }
 
+# }
   dimension: inventory_item_id {
     type: number
     # hidden: yes
@@ -63,6 +65,13 @@ view: order_items {
   dimension: sale_price {
     type: number
     sql: ${TABLE}.sale_price ;;
+  }
+
+  dimension: sale_price_tier {
+    type: tier
+    style: integer
+    sql: ${sale_price} ;;
+    tiers: [75,150,300,500]
   }
 
   dimension_group: shipped {
@@ -146,6 +155,12 @@ view: order_items {
     type: sum
     value_format_name: usd_0
     sql: case when ${returned_raw} IS NULL and ${status} <> 'Canceled' THEN ${sale_price} ELSE 0 END ;;
+  }
+
+  measure: total_gross_revenue_brand {
+    type: number
+    value_format_name: usd_0
+    sql: case when ${products.brand} = {{products.brand_filter._value}} then ${total_gross_revenue} END ;;
   }
 
 #   measure: gross_revenue_percentage {
