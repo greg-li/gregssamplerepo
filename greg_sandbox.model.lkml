@@ -17,6 +17,7 @@ explore: company_list {}
 explore: distribution_centers {}
 
 explore: events {
+  label: "Events +"
   join: users {
     type: left_outer
     sql_on: ${events.user_id} = ${users.id} ;;
