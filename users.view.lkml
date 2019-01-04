@@ -15,11 +15,14 @@ view: users {
   }
 
   dimension: city {
+    group_label: " Location"
     type: string
     sql: ${TABLE}.city ;;
   }
 
   dimension: country {
+    group_label: " Location"
+    alias: [cnty]
     type: string
     map_layer_name: countries
     sql: ${TABLE}.country ;;
@@ -51,21 +54,25 @@ view: users {
   }
 
   dimension: gender {
+    group_label: "  User Info"
     type: string
     sql: ${TABLE}.gender ;;
   }
 
   dimension: last_name {
+    group_label: "  User Info"
     type: string
     sql: ${TABLE}.last_name ;;
   }
 
   dimension: latitude {
+    group_label: "   Lat Long"
     type: number
     sql: ${TABLE}.latitude ;;
   }
 
   dimension: longitude {
+    group_label: "     Lat Long"
     type: number
     sql: ${TABLE}.longitude ;;
   }
