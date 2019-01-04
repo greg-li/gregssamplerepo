@@ -40,7 +40,7 @@ explore: inventory_items {
 }
 
 explore: order_items {
-  label: "Greg's PS Case Study OI Explore"
+  label: "Greg's Sandbox Order Item Explore"
   fields: [ALL_FIELDS*,-products.brand]
   join: users {
     type: left_outer

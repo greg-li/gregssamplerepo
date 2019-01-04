@@ -104,9 +104,32 @@ view: order_items {
     sql: ${returned_raw} is not null ;;
   }
 
+##Top 20 results with and without sort
   measure: count {
     type: count
     drill_fields: [detail*]
+    link: {label: "Explore Top 20 Results" url: "{{ link }}&limit=20" }
+    link: {label: "Explore Top 20 Results by Sale Price" url: "{{ link }}&sorts=order_items.sale_price+desc&limit=20" }
+  }
+
+  measure: order_count {
+    type: count_distinct
+    drill_fields: [created_year, users.age_tier, total_sales_price]
+    link: {label: "Total Sale Price by Month for each Age Tier" url: "{{link}}&pivots=users.age_tier"}
+    sql: ${order_id} ;;
+  }
+
+  measure: count_of_items_demo_3 {
+    type: count_distinct
+    sql: ${id} ;;
+    drill_fields: [created_date, total_sales_price]
+  }
+
+  measure: count_of_items_demo_4 {
+    type: count_distinct
+    sql: ${id} ;;
+    drill_fields: [users.state,order_items.order_count,order_items.average_spend_per_customer]
+    link: {label:"Drill into orders by state by order count and avg spend" url: "{{link}}&limit=15&column_limit=50&vis=%7B%22stacking%22%3A%22%22%2C%22show_value_labels%22%3Afalse%2C%22label_density%22%3A25%2C%22legend_position%22%3A%22center%22%2C%22x_axis_gridlines%22%3Afalse%2C%22y_axis_gridlines%22%3Atrue%2C%22show_view_names%22%3Atrue%2C%22point_style%22%3A%22circle%22%2C%22series_types%22%3A%7B%7D%2C%22limit_displayed_rows%22%3Afalse%2C%22y_axes%22%3A%5B%7B%22label%22%3A%22%22%2C%22orientation%22%3A%22left%22%2C%22series%22%3A%5B%7B%22id%22%3A%22order_items.total_gross_revenue%22%2C%22name%22%3A%22Total+Gross+Revenue%22%2C%22axisId%22%3A%22order_items.total_gross_revenue%22%7D%2C%7B%22id%22%3A%22order_items.order_count%22%2C%22name%22%3A%22Order+Count%22%2C%22axisId%22%3A%22order_items.order_count%22%7D%5D%2C%22showLabels%22%3Atrue%2C%22showValues%22%3Atrue%2C%22unpinAxis%22%3Afalse%2C%22tickDensity%22%3A%22default%22%2C%22type%22%3A%22linear%22%7D%2C%7B%22label%22%3Anull%2C%22orientation%22%3A%22right%22%2C%22series%22%3A%5B%7B%22id%22%3A%22order_items.average_spend_per_customer%22%2C%22name%22%3A%22Avg+Spend+Per+Cust%22%2C%22axisId%22%3A%22order_items.average_spend_per_customer%22%7D%5D%2C%22showLabels%22%3Atrue%2C%22showValues%22%3Atrue%2C%22unpinAxis%22%3Afalse%2C%22tickDensity%22%3A%22default%22%2C%22type%22%3A%22linear%22%7D%5D%2C%22y_axis_combined%22%3Atrue%2C%22show_y_axis_labels%22%3Atrue%2C%22show_y_axis_ticks%22%3Atrue%2C%22y_axis_tick_density%22%3A%22default%22%2C%22y_axis_tick_density_custom%22%3A5%2C%22show_x_axis_label%22%3Atrue%2C%22show_x_axis_ticks%22%3Atrue%2C%22x_axis_scale%22%3A%22auto%22%2C%22y_axis_scale_mode%22%3A%22linear%22%2C%22x_axis_reversed%22%3Afalse%2C%22y_axis_reversed%22%3Afalse%2C%22plot_size_by_field%22%3Afalse%2C%22ordering%22%3A%22none%22%2C%22show_null_labels%22%3Afalse%2C%22show_totals_labels%22%3Afalse%2C%22show_silhouette%22%3Afalse%2C%22totals_color%22%3A%22%23808080%22%2C%22type%22%3A%22looker_scatter%22%7D&filter_config=%7B%7D&origin=share-expanded"}
   }
 
   measure: total_sales_price {
@@ -222,7 +245,9 @@ view: order_items {
       users.first_name,
       users.last_name,
       inventory_items.id,
-      inventory_items.product_name
+      inventory_items.product_name,
+      sale_price,
+      sale_price_tier
     ]
   }
 }
