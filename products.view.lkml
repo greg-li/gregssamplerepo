@@ -6,6 +6,11 @@ view: products {
     suggest_dimension: brand
   }
 
+  filter: brand_filterv2 {
+    type: string
+    suggest_dimension: brand
+  }
+
   parameter: category_filter {
     type: string
     suggest_dimension: category
@@ -71,6 +76,11 @@ view: products {
   dimension: brand_versus_all_other {
     sql: case when {% parameter brand_filter %} = ${brand} then ${brand}
     else 'Other' END;;
+  }
+
+  dimension: brand_versus_all_otherv2 {
+    sql: case when {% condition brand_filterv2 %} ${brand} {% endcondition %} then ${brand}
+      else 'Other' END;;
   }
 
   set: products {

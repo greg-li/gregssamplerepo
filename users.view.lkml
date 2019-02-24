@@ -91,6 +91,7 @@ view: users {
   dimension: zip {
     type: zipcode
     sql: ${TABLE}.zip ;;
+    html: {{rendered_value}} {{average_months_since_signup._rendered_value}} ;;
   }
 
   dimension: days_since_signup {

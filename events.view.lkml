@@ -1,6 +1,13 @@
 view: events {
   sql_table_name: public.events ;;
 
+  parameter: greg_test {
+    type: string
+    allowed_value: {value:"Snickers"}
+    allowed_value: {value:"Twix"}
+    allowed_value: {value:"Starburst"}
+  }
+
   dimension: id {
     primary_key: yes
     type: number
@@ -25,6 +32,7 @@ view: events {
 
   dimension_group: created {
     type: time
+
     timeframes: [
       raw,
       time,
@@ -35,6 +43,12 @@ view: events {
       year
     ]
     sql: ${TABLE}.created_at ;;
+  }
+
+  dimension: test {
+    group_label: "Created Date"
+    type: string
+    sql: 'test' ;;
   }
 
   dimension: event_type {
@@ -74,6 +88,7 @@ view: events {
 
   dimension: state {
     type: string
+    map_layer_name: us_states
     sql: ${TABLE}.state ;;
   }
 

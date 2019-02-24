@@ -1,8 +1,11 @@
 view: order_items {
   sql_table_name: public.order_items ;;
 
+  dimension: SQL_TABLE_NAME { sql: order_items;; hidden:yes}
+
 # my cool name {
   dimension: id {
+    map_layer_name: countries
     primary_key: yes
     type: number
     sql: ${TABLE}.id ;;
@@ -112,12 +115,12 @@ view: order_items {
     link: {label: "Explore Top 20 Results by Sale Price" url: "{{ link }}&sorts=order_items.sale_price+desc&limit=20" }
   }
 
-  measure: order_count {
-    type: count_distinct
-    drill_fields: [created_year, users.age_tier, total_sales_price]
-    link: {label: "Total Sale Price by Month for each Age Tier" url: "{{link}}&pivots=users.age_tier"}
-    sql: ${order_id} ;;
-  }
+#   measure: order_count {
+#     type: count_distinct
+#     drill_fields: [created_year, users.age_tier, total_sales_price]
+#     link: {label: "Total Sale Price by Month for each Age Tier" url: "{{link}}&pivots=users.age_tier"}
+#     sql: ${order_id} ;;
+#   }
 
   measure: count_of_items_demo_3 {
     type: count_distinct
@@ -186,6 +189,11 @@ view: order_items {
     sql: case when ${products.brand} = {{products.brand_filter._value}} then ${total_gross_revenue} END ;;
   }
 
+  measure: order_items_count_as_percentage_with_html{
+    type: count
+    html: {{order_items.order_count._value}}/{{greg._value}} ;;
+  }
+
 #   measure: gross_revenue_percentage {
 #     type: percent_of_total
 #     sql: 1.0*${total_gross_revenue} ;;
@@ -236,6 +244,39 @@ view: order_items {
     sql: 1.0 * ${count_of_customers_having_returns}/${users.count} ;;
   }
 
+  measure: order_item_ratio {
+    type: number
+    value_format_name: percent_2
+    sql:  1.0 * ${count}/${order_count}
+    ;;
+}
+
+  measure: returned_item_ratio {
+    type: number
+    value_format_name: percent_2
+    sql: 1.0*${returned_count}/${order_count} ;;
+  }
+
+  measure: order_count {
+    type: count_distinct
+    sql: ${order_id} ;;
+  }
+
+  measure: order_count_viz {
+    type: count_distinct
+    sql: ${order_id} ;;
+    html:   <img src="https://chart.googleapis.com/chart?chs=400x250&cht=gom&chma=10,0,0,0&chxt=y&chco=635189,B1A8C4,1EA8DF,8ED3EF&chf=bg,s,FFFFFF00&chl={{ rendered_value }}&chd=t:{{ value }}">;;
+  }
+
+
+  measure: order_count_2_with_custom_viz{
+    type: count_distinct
+    sql: ${order_id} ;;
+    html: <font size="2">{{order_count_2_with_custom_viz._rendered_value}}</font> <br>
+    <font size="1">{{order_item_ratio._rendered_value}}</font> <br>
+    <font size="1">{{returned_item_ratio._rendered_value}}</font> <br>
+    ;;
+  }
 
   # ----- Sets of fields for drilling ------
   set: detail {
