@@ -1,7 +1,13 @@
 include: "order_items.view"
 
+
 view: users {
+# required_access_grants: [brand]
   sql_table_name: public.users ;;
+
+  dimension: join_alias {
+    sql: ${TABLE};;
+  }
 
   dimension: id {
     primary_key: yes
@@ -46,6 +52,14 @@ view: users {
   dimension: email {
     type: string
     sql: ${TABLE}.email ;;
+  }
+
+  dimension: gender_test {
+    type: string
+    sql:
+    case when {% condition first_name %} 'Aaron' {% endcondition %}
+    then 1 else 0 end
+    ;;
   }
 
   dimension: first_name {
@@ -118,6 +132,10 @@ view: users {
   measure: count {
     type: count
     drill_fields: [id, first_name, last_name, events.count, order_items.count]
+    link: {
+      label: "click here deborah"
+      url: "/explore/greg_sandbox/users?fields=users.gender,users.count&sorts=users.count+desc&limit=500&column_limit=50&vis=%7B%22type%22%3A%22looker_column%22%2C%22series_types%22%3A%7B%7D%7D&filter_config=%7B%7D&origin=share-expanded"
+    }
   }
 
 
@@ -129,27 +147,7 @@ view: users {
 #     }
 #   }
 
-  measure: average_days_since_signup {
-    type: average
-    sql: ${days_since_signup} ;;
-  }
 
-  measure: average_months_since_signup {
-    type: average
-    sql: ${months_since_signup} ;;
-  }
 
-  dimension: age_tier {
-    type: tier
-    style: integer
-    tiers: [15,26,36,51,66]
-    sql: ${age} ;;
-  }
-  dimension: full_name {
-    type: string
-    sql: ${first_name} || ' ' || ${last_name} ;;
-    drill_fields: [user_drill*]
-  }
-
-  set: user_drill {fields:[is_new_user,age, age_tier,gender,days_since_signup, email, city, country]}
+#   set: user_drill {fields:[is_new_user,age, age_tier,gender,days_since_signup, email, city, country]}
 }
