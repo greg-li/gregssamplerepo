@@ -96,32 +96,32 @@ explore: order_items {
   }
 }
 
-explore: products {
-#   access_filter: {
-#     field: brand
-# #     user_attribute: brand
-#   }
-sql_always_where: case when '\{{ _user_attributes['brand'] }}' = '\%' then 1=1
-  when  position( ',' in '\{{ _user_attributes['brand'] }}' ) <> 0 then ${brand} in ({{ _user_attributes['brand'] }})
-  else
-  '\{{ _user_attributes['brand'] }}' = ${brand} END;;
-fields: [ALL_FIELDS*, -order_items.average_spend_per_customer, -order_items.percent_of_customers_with_returns, -products.brand_with_link]
-join: distribution_centers {
-  type: left_outer
-  sql_on: ${products.distribution_center_id} = ${distribution_centers.id} ;;
-  relationship: many_to_one
-}
-join: inventory_items {
-  type: left_outer
-  sql_on: ${products.id} = ${inventory_items.product_id} ;;
-  relationship: one_to_many
-}
-join: order_items {
-  type: left_outer
-  sql_on: ${inventory_items.id} = ${order_items.inventory_item_id} ;;
-  relationship: one_to_many
-}
-}
+# explore: products {
+# #   access_filter: {
+# #     field: brand
+# # #     user_attribute: brand
+# #   }
+# sql_always_where: case when '\{{ _user_attributes['brand'] }}' = '\%' then 1=1
+#   when  position( ',' in '\{{ _user_attributes['brand'] }}' ) <> 0 then ${brand} in ({{ _user_attributes['brand'] }})
+#   else
+#   '\{{ _user_attributes['brand'] }}' = ${brand} END;;
+# fields: [ALL_FIELDS*, -order_items.average_spend_per_customer, -order_items.percent_of_customers_with_returns, -products.brand_with_link]
+# join: distribution_centers {
+#   type: left_outer
+#   sql_on: ${products.distribution_center_id} = ${distribution_centers.id} ;;
+#   relationship: many_to_one
+# }
+# join: inventory_items {
+#   type: left_outer
+#   sql_on: ${products.id} = ${inventory_items.product_id} ;;
+#   relationship: one_to_many
+# }
+# join: order_items {
+#   type: left_outer
+#   sql_on: ${inventory_items.id} = ${order_items.inventory_item_id} ;;
+#   relationship: one_to_many
+# }
+# }
 
 # explore: users {
 #   fields: [ALL_FIELDS*,
