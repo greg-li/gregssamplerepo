@@ -1,4 +1,4 @@
-include: "order_items.view"
+include: "/test_folder_structure/order_items.view"
 
 
 view: users {
