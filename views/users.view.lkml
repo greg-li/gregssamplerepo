@@ -9,6 +9,8 @@ view: users {
     sql: ${TABLE}.id ;;
   }
 
+  dimension: random {type: string sql: rand();;}
+
   dimension: age {
     type: number
     sql: ${TABLE}.age ;;
