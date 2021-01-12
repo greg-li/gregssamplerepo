@@ -1,7 +1,9 @@
 connection: "biquery_publicdata_standard_sql"
 include: "views/users.view"
 
+# push to prod and then try this with triggers
 explore: users {
+  persist_for: "0 minutes"
   aggregate_table: state_info {
     query: {
       dimensions: [users.city]
