@@ -1,6 +1,11 @@
 connection: "biquery_publicdata_standard_sql"
 include: "views/users.view"
 
+datagroup: every_five {
+  sql_trigger: SELECT floor(EXTRACT(minute FROM CURRENT_TIMESTAMP())/5) ;;
+}
+
+
 # push to prod and then try this with triggers
 explore: users {
   persist_for: "0 minutes"
@@ -9,6 +14,6 @@ explore: users {
       dimensions: [users.city]
       measures: [users.count]
     }
-    materialization: {persist_for: "1 hours"}
+    materialization: {datagroup_trigger:every_five}
   }
 }
